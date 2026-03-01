@@ -1,4 +1,4 @@
-import { Briefcase, DollarSign, Palette, Bitcoin } from "lucide-react";
+import { Briefcase, Play, Palette, Gamepad2 } from "lucide-react";
 
 const categories = [
   {
@@ -6,28 +6,28 @@ const categories = [
     icon: Briefcase,
     links: ["Notion", "Slack", "Figma", "Linear"],
     count: 47,
-    color: "from-blue-500/20 to-blue-600/5",
+    color: "from-primary/20 to-primary/5",
   },
   {
-    name: "Finance",
-    icon: DollarSign,
-    links: ["Stripe", "Wise", "Robinhood", "Mint"],
+    name: "Media",
+    icon: Play,
+    links: ["YouTube", "Spotify", "Netflix", "Twitch"],
     count: 23,
-    color: "from-emerald-500/20 to-emerald-600/5",
+    color: "from-accent/20 to-accent/5",
   },
   {
     name: "Design",
     icon: Palette,
     links: ["Dribbble", "Behance", "Awwwards", "Mobbin"],
     count: 65,
-    color: "from-pink-500/20 to-pink-600/5",
+    color: "from-primary/30 to-primary/5",
   },
   {
-    name: "Crypto",
-    icon: Bitcoin,
-    links: ["Etherscan", "Uniswap", "OpenSea", "Dune"],
+    name: "Gaming",
+    icon: Gamepad2,
+    links: ["Steam", "Epic Games", "IGN", "Twitch"],
     count: 31,
-    color: "from-amber-500/20 to-amber-600/5",
+    color: "from-accent/30 to-accent/5",
   },
 ];
 
