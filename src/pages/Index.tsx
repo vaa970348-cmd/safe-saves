@@ -2,7 +2,6 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeaturesSection from "@/components/FeaturesSection";
 import VaultGrid from "@/components/VaultGrid";
-import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -16,7 +15,6 @@ const Index = () => {
       <div id="vault">
         <VaultGrid />
       </div>
-      <CTASection />
       <Footer />
     </div>
   );
