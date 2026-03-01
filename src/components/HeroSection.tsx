@@ -1,5 +1,5 @@
 import heroWallet from "@/assets/hero-wallet.png";
-import { Shield, Zap, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -32,24 +32,9 @@ const HeroSection = () => {
 
             <div className="fade-up fade-up-delay-3 flex flex-wrap gap-4 mt-10">
               <button className="group inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-7 py-3.5 rounded-xl hover:brightness-110 transition-all duration-300 animate-pulse-glow">
-                Get Started Free
+                Register Free
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="inline-flex items-center gap-2 glass text-foreground font-medium px-7 py-3.5 rounded-xl hover:bg-card/80 transition-all duration-300">
-                <Zap className="w-4 h-4 text-primary" />
-                Watch Demo
-              </button>
-            </div>
-
-            <div className="fade-up fade-up-delay-4 flex items-center gap-6 mt-12 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-green-400" />
-                Free forever plan
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-primary" />
-                No credit card
-              </div>
             </div>
           </div>
 

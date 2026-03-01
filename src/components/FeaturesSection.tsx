@@ -1,4 +1,4 @@
-import { Bookmark, Lock, RefreshCw, Tag, Globe, Smartphone } from "lucide-react";
+import { Bookmark, Lock, RefreshCw, Tag } from "lucide-react";
 
 const features = [
   {
@@ -20,16 +20,6 @@ const features = [
     icon: Tag,
     title: "Smart Tagging",
     description: "Auto-categorize with AI-powered tags or create your own custom taxonomy.",
-  },
-  {
-    icon: Globe,
-    title: "Link Health Monitor",
-    description: "Automatic dead link detection keeps your collection clean and current.",
-  },
-  {
-    icon: Smartphone,
-    title: "Offline Access",
-    description: "Cache your most important bookmarks for access even without connectivity.",
   },
 ];
 
