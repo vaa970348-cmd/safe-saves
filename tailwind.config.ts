@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "sans-serif"],
+        sans: ["Inter", "-apple-system", "BlinkMacSystemFont", "SF Pro Display", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -52,6 +52,8 @@ export default {
         },
         glow: "hsl(var(--glow))",
         "surface-glass": "hsl(var(--surface-glass))",
+        success: "hsl(var(--success))",
+        warning: "hsl(var(--warning))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -79,11 +81,11 @@ export default {
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-12px)" },
+          "50%": { transform: "translateY(-8px)" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px -5px hsl(76 27% 61% / 0.3)" },
-          "50%": { boxShadow: "0 0 40px -5px hsl(76 27% 61% / 0.5)" },
+          "0%, 100%": { boxShadow: "0 0 0 0 hsl(215 100% 50% / 0)" },
+          "50%": { boxShadow: "0 0 0 4px hsl(215 100% 50% / 0.1)" },
         },
       },
       animation: {

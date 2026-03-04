@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Download, Upload } from "lucide-react";
+import { Download, Upload, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkItem, exportLinks, exportLinksAsHTML, parseImportedLinks } from "@/lib/links-api";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -44,7 +44,7 @@ export function ImportExport({ links, onImport }: ImportExportProps) {
   };
 
   return (
-    <div className="flex gap-2">
+    <>
       <input
         ref={fileRef}
         type="file"
@@ -52,20 +52,31 @@ export function ImportExport({ links, onImport }: ImportExportProps) {
         className="hidden"
         onChange={handleFileChange}
       />
-      <Button variant="outline" size="sm" className="gap-1.5" onClick={() => fileRef.current?.click()}>
-        <Upload className="w-3.5 h-3.5" /> Import
-      </Button>
+      <button
+        onClick={() => fileRef.current?.click()}
+        className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+        title="Import bookmarks"
+      >
+        <Upload className="w-4 h-4" />
+      </button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <Download className="w-3.5 h-3.5" /> Export
-          </Button>
+          <button
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+            title="Export bookmarks"
+          >
+            <Download className="w-4 h-4" />
+          </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuItem onClick={handleExportJSON}>Export as JSON</DropdownMenuItem>
-          <DropdownMenuItem onClick={handleExportHTML}>Export as HTML (Bookmarks)</DropdownMenuItem>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={handleExportJSON} className="text-[13px]">
+            <FileDown className="w-3.5 h-3.5 mr-2" /> Export as JSON
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleExportHTML} className="text-[13px]">
+            <FileDown className="w-3.5 h-3.5 mr-2" /> Export as HTML
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    </div>
+    </>
   );
 }
