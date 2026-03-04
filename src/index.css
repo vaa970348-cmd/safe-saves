@@ -6,36 +6,36 @@
 
 @layer base {
   :root {
-    --background: 40 20% 96%;
-    --foreground: 0 0% 9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 40 10% 92%;
-    --secondary-foreground: 0 0% 9%;
-
-    --muted: 40 10% 92%;
+    /* Background & Foreground */
+    --background: 40 20% 96%;  /* #F8F3E1 (cream background) */
+    --foreground: 0 0% 9%;  /* Dark text color (can be adjusted as needed) */
+    
+    /* Primary Color (70% rule) */
+    --primary: 41 26% 21%;  /* #41431B (rich olive/brown) */
+    --primary-foreground: 0 0% 98%;  /* Light text on primary color */
+    
+    /* Secondary Color (20% rule) */
+    --secondary: 70 25% 60%;  /* #AEB784 (soft muted green) */
+    --secondary-foreground: 0 0% 9%;  /* Dark text on secondary color */
+    
+    /* Accent Color (10% rule) */
+    --accent: 45 35% 70%;  /* #E3DBBB (light beige) */
+    --accent-foreground: 0 0% 9%;  /* Dark text on accent color */
+    
+    /* Additional Colors */
+    --muted: 40 10% 92%;  /* Muted colors for other UI elements */
     --muted-foreground: 0 0% 45%;
-
-    --accent: 40 10% 92%;
-    --accent-foreground: 0 0% 9%;
-
-    --destructive: 0 72% 51%;
+    
+    --destructive: 0 72% 51%; /* Red for destructive elements */
     --destructive-foreground: 0 0% 98%;
-
+    
     --border: 0 0% 90%;
     --input: 0 0% 90%;
     --ring: 0 0% 9%;
-
+    
     --radius: 0.875rem;
-
+    
+    /* Sidebar Colors */
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 0 0% 9%;
     --sidebar-primary: 0 0% 9%;
@@ -44,8 +44,8 @@
     --sidebar-accent-foreground: 0 0% 9%;
     --sidebar-border: 0 0% 92%;
     --sidebar-ring: 0 0% 9%;
-
-    /* Custom Apple-like tokens */
+    
+    /* Custom Tokens */
     --glow: 215 100% 50%;
     --surface-glass: 0 0% 100%;
     --surface-elevated: 0 0% 100%;
@@ -136,6 +136,7 @@
   }
 }
 
+/* Keyframes and animations */
 @keyframes fadeUp {
   from {
     opacity: 0;
