@@ -1,24 +1,27 @@
-import { LinkItem } from "@/lib/links-api";
-import { ExternalLink, Trash2, AlertTriangle, Tag, FolderOpen, GripVertical } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useRef } from "react";
+import { LinkItem, Folder } from "@/lib/links-api";
+import { ExternalLink, Trash2, AlertTriangle, FolderOpen, GripVertical, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Folder } from "@/lib/links-api";
+import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { motion } from "framer-motion";
 
 interface LinkCardProps {
   link: LinkItem;
   folders: Folder[];
   onDelete: (id: string) => void;
   onMove: (linkId: string, folderId: string | null) => void;
+  index?: number;
 }
 
-export function LinkCard({ link, folders, onDelete, onMove }: LinkCardProps) {
+export function LinkCard({ link, folders, onDelete, onMove, index = 0 }: LinkCardProps) {
+  const [isDragging, setIsDragging] = useState(false);
   const hostname = (() => {
-    try { return new URL(link.url).hostname; } catch { return link.url; }
+    try { return new URL(link.url).hostname.replace("www.", ""); } catch { return link.url; }
   })();
 
   const folder = folders.find((f) => f.id === link.folder_id);
 
-  // Generate screenshot URL: use stored one, or fallback to thum.io
   const screenshotSrc = link.screenshot_url || (() => {
     try {
       const u = new URL(link.url);
@@ -27,98 +30,138 @@ export function LinkCard({ link, folders, onDelete, onMove }: LinkCardProps) {
   })();
 
   return (
-    <div className="glass rounded-xl overflow-hidden group hover:glow-border transition-all duration-300">
-      {/* Screenshot / Preview */}
-      <div className="relative h-40 bg-muted overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+      draggable
+      onDragStart={(e: any) => {
+        setIsDragging(true);
+        e.dataTransfer?.setData("text/plain", link.id);
+      }}
+      onDragEnd={() => setIsDragging(false)}
+      className={`surface-card surface-card-hover group cursor-grab active:cursor-grabbing overflow-hidden ${isDragging ? "opacity-40 scale-[0.97]" : ""}`}
+    >
+      {/* Screenshot */}
+      <div className="relative aspect-[16/10] bg-muted overflow-hidden">
         {screenshotSrc ? (
           <img
             src={screenshotSrc}
-            alt={link.title || "Link preview"}
-            className="w-full h-full object-cover object-top"
+            alt={link.title || ""}
+            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
             loading="lazy"
             onError={(e) => {
               const el = e.target as HTMLImageElement;
               el.style.display = "none";
-              el.nextElementSibling?.classList.remove("hidden");
+              if (el.nextElementSibling) el.nextElementSibling.classList.remove("hidden");
             }}
           />
         ) : null}
-        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-card ${screenshotSrc ? "hidden absolute inset-0" : ""}`}>
-          <ExternalLink className="w-10 h-10 text-muted-foreground/40" />
+        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-accent/30 ${screenshotSrc ? "hidden absolute inset-0" : ""}`}>
+          <ExternalLink className="w-8 h-8 text-muted-foreground/20" />
         </div>
-        {link.is_broken && (
-          <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-md px-2 py-1 text-xs font-medium flex items-center gap-1">
-            <AlertTriangle className="w-3 h-3" /> Broken
-          </div>
-        )}
-        {link.category && (
-          <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="text-xs backdrop-blur-sm bg-card/80">
-              {link.category}
-            </Badge>
-          </div>
-        )}
+
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+        {/* Status badges */}
+        <div className="absolute top-2.5 left-2.5 flex gap-1.5">
+          {link.is_broken && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-destructive/90 text-destructive-foreground backdrop-blur-sm">
+              <AlertTriangle className="w-3 h-3" /> Broken
+            </span>
+          )}
+        </div>
+
+        {/* Quick action */}
+        <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-all duration-200">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-7 h-7 rounded-full bg-card/90 backdrop-blur-sm flex items-center justify-center hover:bg-card transition-colors shadow-sm">
+                <MoreHorizontal className="w-3.5 h-3.5 text-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => window.open(link.url, "_blank")}>
+                <ExternalLink className="w-3.5 h-3.5 mr-2" /> Open in new tab
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(link.url)}>
+                Copy URL
+              </DropdownMenuItem>
+              {folders.length > 0 && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <FolderOpen className="w-3.5 h-3.5 mr-2" /> Move to folder
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => onMove(link.id, null)}>
+                        No folder
+                      </DropdownMenuItem>
+                      {folders.map((f) => (
+                        <DropdownMenuItem key={f.id} onClick={() => onMove(link.id, f.id)}>
+                          <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: f.color }} />
+                          {f.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                </>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => onDelete(link.id)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-2">
-        <div className="flex items-start gap-2">
+      <div className="p-3.5 space-y-1.5" onClick={() => window.open(link.url, "_blank")}>
+        <div className="flex items-center gap-2">
           {link.favicon_url && (
             <img
               src={link.favicon_url}
               alt=""
-              className="w-4 h-4 mt-1 rounded-sm flex-shrink-0"
+              className="w-4 h-4 rounded flex-shrink-0"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
           )}
-          <div className="min-w-0 flex-1">
-            <h3 className="font-semibold text-sm text-foreground truncate">
-              {link.title || hostname}
-            </h3>
-            <p className="text-xs text-muted-foreground truncate">{hostname}</p>
-          </div>
+          <h3 className="font-semibold text-[13px] text-foreground truncate leading-tight flex-1">
+            {link.title || hostname}
+          </h3>
         </div>
+
+        <p className="text-[11px] text-muted-foreground truncate">{hostname}</p>
 
         {link.description && (
-          <p className="text-xs text-muted-foreground line-clamp-2">{link.description}</p>
+          <p className="text-[11px] text-muted-foreground/70 line-clamp-2 leading-relaxed">{link.description}</p>
         )}
 
-        {link.tags && link.tags.length > 0 && (
-          <div className="flex gap-1 flex-wrap">
-            {link.tags.map((tag) => (
-              <Badge key={tag} variant="outline" className="text-[10px] px-1.5 py-0">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        {folder && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <FolderOpen className="w-3 h-3" />
-            <span>{folder.name}</span>
-          </div>
-        )}
-
-        <div className="flex items-center gap-1 pt-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 text-xs flex-1"
-            onClick={() => window.open(link.url, "_blank")}
-          >
-            <ExternalLink className="w-3 h-3 mr-1" /> Open
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 text-xs text-destructive hover:text-destructive"
-            onClick={() => onDelete(link.id)}
-          >
-            <Trash2 className="w-3 h-3" />
-          </Button>
+        <div className="flex items-center gap-1.5 pt-0.5 flex-wrap">
+          {link.category && (
+            <span className="text-[10px] font-medium text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+              {link.category}
+            </span>
+          )}
+          {link.tags?.slice(0, 2).map((tag) => (
+            <span key={tag} className="text-[10px] text-muted-foreground/60 bg-secondary/50 px-1.5 py-0.5 rounded-full">
+              {tag}
+            </span>
+          ))}
+          {folder && (
+            <span className="text-[10px] text-muted-foreground/60 flex items-center gap-0.5 ml-auto">
+              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: folder.color }} />
+              {folder.name}
+            </span>
+          )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
