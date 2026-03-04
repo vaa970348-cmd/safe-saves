@@ -37,8 +37,8 @@ const Register = () => {
     if (error) {
       toast({ variant: 'destructive', title: 'Registration failed', description: error.message });
     } else {
-      toast({ title: 'Account created!', description: 'Check your email to confirm your account.' });
-      navigate('/login');
+      toast({ title: 'Account created!', description: 'Welcome to Bookmark Wallet!' });
+      navigate('/dashboard');
     }
   };
 
