@@ -17,7 +17,6 @@ serve(async (req) => {
       });
     }
 
-    // Fetch the page
     let html = "";
     let finalUrl = url;
     let is_broken = false;
@@ -40,25 +39,22 @@ serve(async (req) => {
       is_broken = true;
     }
 
-    // Parse metadata from HTML
     let title = "";
     let description = "";
     let favicon_url = "";
+    let og_image = "";
 
     if (html) {
-      // Title
       const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i);
       const ogTitleMatch = html.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']*)["']/i);
       title = ogTitleMatch?.[1] || titleMatch?.[1] || "";
       title = title.trim().substring(0, 500);
 
-      // Description
       const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i);
       const ogDescMatch = html.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']*)["']/i);
       description = ogDescMatch?.[1] || descMatch?.[1] || "";
       description = description.trim().substring(0, 1000);
 
-      // Favicon
       const iconMatch = html.match(/<link[^>]*rel=["'](?:icon|shortcut icon)["'][^>]*href=["']([^"']*)["']/i);
       if (iconMatch?.[1]) {
         favicon_url = iconMatch[1];
@@ -74,21 +70,24 @@ serve(async (req) => {
         favicon_url = `${urlObj.origin}/favicon.ico`;
       }
 
-      // OG Image as screenshot
       const ogImageMatch = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']*)["']/i);
-      var screenshot_url = ogImageMatch?.[1] || "";
-      if (screenshot_url && screenshot_url.startsWith("/")) {
+      og_image = ogImageMatch?.[1] || "";
+      if (og_image && og_image.startsWith("/")) {
         const urlObj = new URL(finalUrl);
-        screenshot_url = `${urlObj.origin}${screenshot_url}`;
+        og_image = `${urlObj.origin}${og_image}`;
       }
     }
+
+    // Use thum.io free screenshot service as primary, OG image as fallback display
+    const screenshot_url = `https://image.thum.io/get/width/600/crop/400/https://${new URL(url).host}${new URL(url).pathname}`;
 
     return new Response(
       JSON.stringify({
         title: title || new URL(url).hostname,
         description,
         favicon_url,
-        screenshot_url: screenshot_url || "",
+        screenshot_url,
+        og_image,
         is_broken,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
