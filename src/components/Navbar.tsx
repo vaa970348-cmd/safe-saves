@@ -26,7 +26,8 @@ const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-3">
           {user ? (
-            <>
+             <>
+              <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2">Dashboard</Link>
               <span className="text-sm text-muted-foreground truncate max-w-[160px]">{user.email}</span>
               <button
                 onClick={signOut}

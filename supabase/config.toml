@@ -1,1 +1,10 @@
 project_id = "qcwswxugvjyvyqkqbpmk"
+
+[functions.fetch-link-metadata]
+verify_jwt = false
+
+[functions.categorize-link]
+verify_jwt = false
+
+[functions.check-broken-links]
+verify_jwt = false
