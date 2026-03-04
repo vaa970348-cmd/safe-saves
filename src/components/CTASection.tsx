@@ -17,7 +17,7 @@ const CTASection = () => {
               <span className="gradient-text">your digital world?</span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-md mx-auto mb-10">
-              Join thousands of power users who trust Bookmark Wallet to keep their internet organized and secure.
+              Join thousands of power users who trust Wallet to keep their internet organized and secure.
             </p>
             <button className="group inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-8 py-4 rounded-xl hover:brightness-110 transition-all duration-300 text-lg animate-pulse-glow">
               Start for Free

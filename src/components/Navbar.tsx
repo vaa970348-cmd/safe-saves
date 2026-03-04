@@ -14,14 +14,13 @@ const Navbar = () => {
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <Wallet className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg text-foreground tracking-tight">Bookmark Wallet</span>
+          <span className="font-bold text-lg text-foreground tracking-tight">Wallet</span>
         </Link>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
           <a href="#features" className="hover:text-foreground transition-colors">Features</a>
           <a href="#vault" className="hover:text-foreground transition-colors">Vault</a>
-          <a href="#pricing" className="hover:text-foreground transition-colors">Pricing</a>
         </div>
 
         <div className="hidden md:flex items-center gap-3">
@@ -59,7 +58,6 @@ const Navbar = () => {
         <div className="md:hidden glass border-t border-border px-6 py-4 space-y-3">
           <a href="#features" className="block text-sm text-muted-foreground hover:text-foreground">Features</a>
           <a href="#vault" className="block text-sm text-muted-foreground hover:text-foreground">Vault</a>
-          <a href="#pricing" className="block text-sm text-muted-foreground hover:text-foreground">Pricing</a>
           {user ? (
             <button onClick={signOut} className="w-full text-sm bg-primary text-primary-foreground font-medium px-5 py-2.5 rounded-lg mt-2 flex items-center justify-center gap-2">
               <LogOut className="w-4 h-4" /> Sign Out

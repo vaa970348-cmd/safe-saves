@@ -200,7 +200,7 @@ const Dashboard = () => {
           <div className="w-7 h-7 rounded-lg bg-foreground flex items-center justify-center">
             <Bookmark className="w-3.5 h-3.5 text-primary-foreground" />
           </div>
-          <span className="font-semibold text-[15px] text-foreground tracking-tight">Bookmark Wallet</span>
+          <span className="font-semibold text-[15px] text-foreground tracking-tight">Wallet</span>
         </div>
 
         {/* Search */}

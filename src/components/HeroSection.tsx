@@ -28,7 +28,7 @@ const HeroSection = () => {
             </h1>
 
             <p className="fade-up fade-up-delay-2 mt-6 text-lg text-muted-foreground leading-relaxed max-w-md">
-              Stop losing tabs. Store, tag, and encrypt your digital footprint in a private bookmark wallet designed for the modern web.
+              Stop losing tabs. Store, tag, and encrypt your digital footprint in a private Wallet designed for the modern web.
             </p>
 
             <div className="fade-up fade-up-delay-3 flex flex-wrap gap-4 mt-10">
@@ -44,7 +44,7 @@ const HeroSection = () => {
             <div className="relative animate-float">
               <img
                 src={heroWallet}
-                alt="Digital bookmark wallet with glowing translucent cards"
+                alt="Digital Wallet with glowing translucent cards"
                 className="w-full max-w-lg rounded-2xl"
               />
               {/* Glow behind image */}

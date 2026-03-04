@@ -8,10 +8,10 @@ const Footer = () => {
           <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
             <Wallet className="w-3.5 h-3.5 text-primary-foreground" />
           </div>
-          <span className="font-semibold text-foreground tracking-tight">Bookmark Wallet</span>
+          <span className="font-semibold text-foreground tracking-tight">Wallet</span>
         </div>
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Bookmark Wallet. All rights reserved.
+          © {new Date().getFullYear()} Wallet. All rights reserved.
         </p>
       </div>
     </footer>

@@ -37,7 +37,7 @@ const Register = () => {
     if (error) {
       toast({ variant: 'destructive', title: 'Registration failed', description: error.message });
     } else {
-      toast({ title: 'Account created!', description: 'Welcome to Bookmark Wallet!' });
+      toast({ title: 'Account created!', description: 'Welcome to Wallet!' });
       navigate('/dashboard');
     }
   };
@@ -50,7 +50,7 @@ const Register = () => {
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
             <Wallet className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-xl text-foreground tracking-tight">Bookmark Wallet</span>
+          <span className="font-bold text-xl text-foreground tracking-tight">Wallet</span>
         </Link>
 
         <div className="glass rounded-2xl p-8 glow-border">
