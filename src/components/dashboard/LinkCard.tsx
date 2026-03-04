@@ -18,24 +18,34 @@ export function LinkCard({ link, folders, onDelete, onMove }: LinkCardProps) {
 
   const folder = folders.find((f) => f.id === link.folder_id);
 
+  // Generate screenshot URL: use stored one, or fallback to thum.io
+  const screenshotSrc = link.screenshot_url || (() => {
+    try {
+      const u = new URL(link.url);
+      return `https://image.thum.io/get/width/600/crop/400/${u.href}`;
+    } catch { return ""; }
+  })();
+
   return (
     <div className="glass rounded-xl overflow-hidden group hover:glow-border transition-all duration-300">
       {/* Screenshot / Preview */}
       <div className="relative h-40 bg-muted overflow-hidden">
-        {link.screenshot_url ? (
+        {screenshotSrc ? (
           <img
-            src={link.screenshot_url}
+            src={screenshotSrc}
             alt={link.title || "Link preview"}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-top"
+            loading="lazy"
             onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
+              const el = e.target as HTMLImageElement;
+              el.style.display = "none";
+              el.nextElementSibling?.classList.remove("hidden");
             }}
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-card">
-            <ExternalLink className="w-10 h-10 text-muted-foreground/40" />
-          </div>
-        )}
+        ) : null}
+        <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-card ${screenshotSrc ? "hidden absolute inset-0" : ""}`}>
+          <ExternalLink className="w-10 h-10 text-muted-foreground/40" />
+        </div>
         {link.is_broken && (
           <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-md px-2 py-1 text-xs font-medium flex items-center gap-1">
             <AlertTriangle className="w-3 h-3" /> Broken
