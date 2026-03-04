@@ -1,5 +1,6 @@
 import heroWallet from "@/assets/hero-wallet.png";
 import { Shield, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -31,10 +32,10 @@ const HeroSection = () => {
             </p>
 
             <div className="fade-up fade-up-delay-3 flex flex-wrap gap-4 mt-10">
-              <button className="group inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-7 py-3.5 rounded-xl hover:brightness-110 transition-all duration-300 animate-pulse-glow">
+              <Link to="/register" className="group inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-7 py-3.5 rounded-xl hover:brightness-110 transition-all duration-300 animate-pulse-glow">
                 Register Free
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </div>
 
