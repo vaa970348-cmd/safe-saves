@@ -12,11 +12,9 @@ import { LinkCard } from "@/components/dashboard/LinkCard";
 import { FolderSidebar } from "@/components/dashboard/FolderSidebar";
 import { ImportExport } from "@/components/dashboard/ImportExport";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Wallet, Search, RefreshCw, AlertTriangle, LayoutGrid, List,
-  LogOut, ArrowUpDown, Trash2, Plus, Bookmark
+  LogOut, ArrowUpDown, Trash2, Plus, Bookmark, Menu, X
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -38,6 +36,7 @@ const Dashboard = () => {
   const [filterBroken, setFilterBroken] = useState(false);
   const [checkingBroken, setCheckingBroken] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/login");
@@ -115,7 +114,7 @@ const Dashboard = () => {
       toast({ title: "Check complete", description: `${result.checked} links verified` });
       loadData();
     } catch (e: any) {
-      toast({ variant: "destructive", title: "Error", description: e.message });
+      toast({ variant: "destructive", title: "Check failed", description: e.message || "Could not reach the server. Please try again." });
     } finally {
       setCheckingBroken(false);
     }
@@ -183,6 +182,13 @@ const Dashboard = () => {
       ? "Broken Links"
       : "All Bookmarks";
 
+  /* Close sidebar on folder select (mobile) */
+  const handleFolderSelect = (id: string | null) => {
+    setSelectedFolder(id);
+    setFilterBroken(false);
+    setSidebarOpen(false);
+  };
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -192,15 +198,41 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Sidebar */}
-      <aside className="w-[240px] flex-shrink-0 border-r border-border bg-card/50 h-screen sticky top-0 flex flex-col">
-        {/* Logo */}
-        <div className="px-4 h-14 flex items-center gap-2.5 border-b border-border">
+    <div className="min-h-screen bg-background flex relative">
+      {/* Mobile sidebar overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm md:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Sidebar — hidden on mobile, shown via toggle */}
+      <aside
+        className={`
+          fixed inset-y-0 left-0 z-50 w-[260px] flex-shrink-0 border-r border-border bg-card/95 backdrop-blur-md
+          flex flex-col transition-transform duration-300 ease-out
+          md:sticky md:top-0 md:h-screen md:translate-x-0 md:z-auto
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        {/* Logo + close on mobile */}
+        <div className="px-4 h-14 flex items-center gap-2.5 border-b border-border flex-shrink-0">
           <div className="w-7 h-7 rounded-lg bg-foreground flex items-center justify-center">
             <Bookmark className="w-3.5 h-3.5 text-primary-foreground" />
           </div>
           <span className="font-semibold text-[15px] text-foreground tracking-tight">Wallet</span>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="ml-auto w-7 h-7 rounded-md flex items-center justify-center text-muted-foreground hover:text-foreground md:hidden"
+          >
+            <X className="w-4 h-4" />
+          </button>
         </div>
 
         {/* Search */}
@@ -225,7 +257,7 @@ const Dashboard = () => {
             <FolderSidebar
               folders={[]}
               selectedFolder={selectedFolder}
-              onSelect={(id) => { setSelectedFolder(id); setFilterBroken(false); }}
+              onSelect={handleFolderSelect}
               onDelete={() => {}}
               onDropLink={handleMoveLink}
               linkCounts={linkCounts}
@@ -233,8 +265,8 @@ const Dashboard = () => {
             />
             {brokenCount > 0 && (
               <button
-                onClick={() => { setFilterBroken(!filterBroken); setSelectedFolder(null); }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 ${
+                onClick={() => { setFilterBroken(!filterBroken); setSelectedFolder(null); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 min-h-[40px] ${
                   filterBroken
                     ? "bg-destructive text-destructive-foreground"
                     : "text-destructive/70 hover:text-destructive hover:bg-destructive/5"
@@ -255,7 +287,7 @@ const Dashboard = () => {
             <FolderSidebar
               folders={folders}
               selectedFolder={selectedFolder}
-              onSelect={(id) => { setSelectedFolder(id); setFilterBroken(false); }}
+              onSelect={handleFolderSelect}
               onDelete={handleDeleteFolder}
               onDropLink={handleMoveLink}
               linkCounts={linkCounts}
@@ -270,9 +302,9 @@ const Dashboard = () => {
         </div>
 
         {/* User footer */}
-        <div className="px-3 py-3 border-t border-border">
+        <div className="px-3 py-3 border-t border-border flex-shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-semibold text-muted-foreground">
+            <div className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-[11px] font-semibold text-muted-foreground flex-shrink-0">
               {user?.email?.[0]?.toUpperCase()}
             </div>
             <span className="flex-1 text-[12px] text-muted-foreground truncate">{user?.email}</span>
@@ -290,7 +322,16 @@ const Dashboard = () => {
       {/* Main content */}
       <main className="flex-1 min-w-0 flex flex-col h-screen">
         {/* Top toolbar */}
-        <header className="h-14 flex items-center gap-3 px-6 border-b border-border bg-card/30 flex-shrink-0">
+        <header className="h-14 flex items-center gap-2 sm:gap-3 px-3 sm:px-6 border-b border-border bg-card/30 flex-shrink-0">
+          {/* Mobile menu toggle */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all md:hidden flex-shrink-0"
+            aria-label="Open sidebar"
+          >
+            <Menu className="w-4 h-4" />
+          </button>
+
           <div className="flex-1 min-w-0">
             <h1 className="text-[15px] font-semibold text-foreground truncate">{currentTitle}</h1>
             <p className="text-[11px] text-muted-foreground">
@@ -298,20 +339,22 @@ const Dashboard = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-1">
-            {/* Category filter */}
+          <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Category filter — hide on very small screens */}
             {categories.length > 0 && (
-              <Select value={filterCategory} onValueChange={setFilterCategory}>
-                <SelectTrigger className="h-8 w-auto min-w-[100px] text-[12px] border-0 bg-secondary rounded-lg">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all" className="text-[13px]">All categories</SelectItem>
-                  {categories.map((c) => (
-                    <SelectItem key={c} value={c!} className="text-[13px]">{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="hidden sm:block">
+                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                  <SelectTrigger className="h-8 w-auto min-w-[100px] text-[12px] border-0 bg-secondary rounded-lg">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all" className="text-[13px]">All categories</SelectItem>
+                    {categories.map((c) => (
+                      <SelectItem key={c} value={c!} className="text-[13px]">{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
 
             {/* Sort */}
@@ -321,7 +364,7 @@ const Dashboard = () => {
                   <ArrowUpDown className="w-4 h-4" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="glass">
                 <DropdownMenuItem onClick={() => { setSortBy("created_at"); setSortDir("desc"); }} className="text-[13px]">
                   Newest first
                 </DropdownMenuItem>
@@ -376,7 +419,37 @@ const Dashboard = () => {
         </header>
 
         {/* Content area */}
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6">
+          {/* Mobile category filter */}
+          {categories.length > 0 && (
+            <div className="sm:hidden mb-3">
+              <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <SelectTrigger className="h-9 w-full text-[13px] border-0 bg-secondary rounded-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all" className="text-[13px]">All categories</SelectItem>
+                  {categories.map((c) => (
+                    <SelectItem key={c} value={c!} className="text-[13px]">{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {/* Mobile search */}
+          <div className="sm:hidden mb-3">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <Input
+                placeholder="Search bookmarks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-9 pl-8 text-[13px] bg-secondary border-0 rounded-lg placeholder:text-muted-foreground/50"
+              />
+            </div>
+          </div>
+
           <AnimatePresence mode="wait">
             {loadingLinks ? (
               <motion.div
@@ -413,7 +486,7 @@ const Dashboard = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4"
               >
                 {filteredLinks.map((link, i) => (
                   <LinkCard
@@ -466,7 +539,7 @@ function LinkListItem({ link, folders, onDelete, onMove, index = 0 }: {
       transition={{ duration: 0.2, delay: index * 0.02 }}
       draggable
       onDragStart={(e: any) => e.dataTransfer?.setData("text/plain", link.id)}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-secondary/60 transition-all group cursor-grab active:cursor-grabbing"
+      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-secondary/60 transition-all group cursor-grab active:cursor-grabbing min-h-[44px]"
       onClick={() => window.open(link.url, "_blank")}
     >
       {link.favicon_url && (
@@ -489,9 +562,9 @@ function LinkListItem({ link, folders, onDelete, onMove, index = 0 }: {
       )}
       <button
         onClick={(e) => { e.stopPropagation(); onDelete(link.id); }}
-        className="w-7 h-7 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
+        className="w-8 h-8 rounded-md flex items-center justify-center opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
       >
-        <Trash2 className="w-3 h-3" />
+        <Trash2 className="w-3.5 h-3.5" />
       </button>
     </motion.div>
   );
