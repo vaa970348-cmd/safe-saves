@@ -57,7 +57,7 @@ export function ImportExport({ links, onImport }: ImportExportProps) {
         className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
         title="Import bookmarks"
       >
-        <Upload className="w-4 h-4" />
+        <Download className="w-4 h-4" />
       </button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -65,7 +65,7 @@ export function ImportExport({ links, onImport }: ImportExportProps) {
             className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
             title="Export bookmarks"
           >
-            <Download className="w-4 h-4" />
+            <Upload className="w-4 h-4" />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">

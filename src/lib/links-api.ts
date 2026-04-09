@@ -127,6 +127,11 @@ export async function moveLink(linkId: string, folderId: string | null) {
 
 export async function checkBrokenLinks() {
   const { data, error } = await supabase.functions.invoke("check-broken-links");
+  // supabase.functions.invoke may set error even on 2xx when response parsing fails
+  // If we got data back, treat it as success regardless of error
+  if (data && typeof data === "object" && "checked" in data) {
+    return data as { checked: number; results: any[] };
+  }
   if (error) throw error;
   return data;
 }

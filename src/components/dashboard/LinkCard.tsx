@@ -81,7 +81,7 @@ export function LinkCard({ link, folders, onDelete, onMove, index = 0 }: LinkCar
                 <MoreHorizontal className="w-3.5 h-3.5 text-foreground" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-48 glass">
               <DropdownMenuItem onClick={() => window.open(link.url, "_blank")}>
                 <ExternalLink className="w-3.5 h-3.5 mr-2" /> Open in new tab
               </DropdownMenuItem>
